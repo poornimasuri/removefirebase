@@ -1,0 +1,27 @@
+var database = firebase.database();
+database.ref('app-data').on('value', function(snapshot){
+    if(snapshot.exists()){
+        var content = '';
+        snapshot.forEach(function(data){
+            var val = data.val();
+            var childKey = data.key;
+            content +='<tr>';
+            
+            content += '<td>' + val.desc + '</td>';
+            content += '<td>' + "<input type='button' value='Delete' class='delete' onclick='delete_row("+childKey+")'>" + '</td>';
+
+            content += '</tr>';
+        });
+        $('#todays_quote').append(content);
+    }
+});
+function delete_row(childKey) {
+  var dataRef = firebase.database.ref("app-data'").child(childKey);
+  dataRef.remove()
+  .then(function(){
+    console.log("Remove succeeded.")
+  })
+  .catch(function(error){
+    console.log("Remove Failed!"+error.message)
+  });
+}
